@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: skillhub_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: skillhub_db
+      POSTGRES_USER: skillhub_user
+      POSTGRES_PASSWORD: SkillHubPassword2026!
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skillhub_user -d skillhub_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: skillhub_api
+    restart: unless-stopped
+    ports:
+      - "5051:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=skillhub_db;Username=skillhub_user;Password=SkillHubPassword2026!
+      - Jwt__Secret=SkillHubSuperSecretKeyForJwtTokenSigning2026!
+      - Jwt__Issuer=SkillHubApi
+      - Jwt__Audience=SkillHubClients
+      - Jwt__ExpirationHours=24
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: skillhub_web
+    restart: unless-stopped
+    ports:
+      - "5050:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=skillhub_db;Username=skillhub_user;Password=SkillHubPassword2026!
+      - Jwt__Secret=SkillHubSuperSecretKeyForJwtTokenSigning2026!
+      - Jwt__Issuer=SkillHubApi
+      - Jwt__Audience=SkillHubClients
+      - Jwt__ExpirationHours=24
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

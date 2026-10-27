@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /app
+
+# Copy csproj files and restore
+COPY src/SkillHub.Domain/*.csproj src/SkillHub.Domain/
+COPY src/SkillHub.Application/*.csproj src/SkillHub.Application/
+COPY src/SkillHub.Infrastructure/*.csproj src/SkillHub.Infrastructure/
+COPY src/SkillHub.Web/*.csproj src/SkillHub.Web/
+RUN dotnet restore src/SkillHub.Web/SkillHub.Web.csproj
+
+# Copy all source files and build
+COPY src/ src/
+RUN dotnet publish src/SkillHub.Web/SkillHub.Web.csproj -c Release -o /out
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+COPY --from=build /out .
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+ENTRYPOINT ["dotnet", "SkillHub.Web.dll"]
