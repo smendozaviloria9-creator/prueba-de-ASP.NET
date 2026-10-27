@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "pEG/WrvWwhs=",
+  "dgSpecHash": "YbgVUmTEiGc=",
   "success": true,
   "projectFilePath": "/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/SkillHub.Api.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,6 @@
     "/home/sebastian/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.13/microsoft.aspnetcore.authentication.jwtbearer.10.0.13.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.aspnetcore.identity.entityframeworkcore/10.0.13/microsoft.aspnetcore.identity.entityframeworkcore.10.0.13.nupkg.sha512",
-    "/home/sebastian/.nuget/packages/microsoft.aspnetcore.openapi/10.0.13/microsoft.aspnetcore.openapi.10.0.13.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.bcl.cryptography/10.0.2/microsoft.bcl.cryptography.10.0.2.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.build.framework/18.0.2/microsoft.build.framework.18.0.2.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.codeanalysis.analyzers/3.11.0/microsoft.codeanalysis.analyzers.3.11.0.nupkg.sha512",
@@ -32,7 +31,7 @@
     "/home/sebastian/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/8.19.2/microsoft.identitymodel.protocols.openidconnect.8.19.2.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.identitymodel.tokens/8.23.0/microsoft.identitymodel.tokens.8.23.0.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.io.recyclablememorystream/3.0.1/microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
-    "/home/sebastian/.nuget/packages/microsoft.openapi/2.12.2/microsoft.openapi.2.12.2.nupkg.sha512",
+    "/home/sebastian/.nuget/packages/microsoft.openapi/1.6.23/microsoft.openapi.1.6.23.nupkg.sha512",
     "/home/sebastian/.nuget/packages/microsoft.visualstudio.solutionpersistence/1.0.52/microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "/home/sebastian/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/home/sebastian/.nuget/packages/newtonsoft.json/13.0.4/newtonsoft.json.13.0.4.nupkg.sha512",

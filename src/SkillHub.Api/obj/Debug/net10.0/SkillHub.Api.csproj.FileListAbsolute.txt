@@ -12,7 +12,6 @@
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Humanizer.dll
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.Bcl.Cryptography.dll
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.Build.Framework.dll
 /home/sebastian/prueba-de-ASP.NET/src/SkillHub.Api/bin/Debug/net10.0/Microsoft.CodeAnalysis.dll
