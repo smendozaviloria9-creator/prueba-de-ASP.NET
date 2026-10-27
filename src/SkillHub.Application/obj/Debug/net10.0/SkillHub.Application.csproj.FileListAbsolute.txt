@@ -1,0 +1,16 @@
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/bin/Debug/net10.0/SkillHub.Application.deps.json
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/bin/Debug/net10.0/SkillHub.Application.dll
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/bin/Debug/net10.0/SkillHub.Application.pdb
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/bin/Debug/net10.0/SkillHub.Domain.dll
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/bin/Debug/net10.0/SkillHub.Domain.pdb
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.csproj.AssemblyReference.cache
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.AssemblyInfoInputs.cache
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.AssemblyInfo.cs
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.csproj.CoreCompileInputs.cache
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.sourcelink.json
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.F11A1AC6.Up2Date
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.dll
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/refint/SkillHub.Application.dll
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/SkillHub.Application.pdb
+/home/sebastian/prueba-de-ASP.NET/src/SkillHub.Application/obj/Debug/net10.0/ref/SkillHub.Application.dll
