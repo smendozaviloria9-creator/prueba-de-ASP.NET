@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Acceso Restringido";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 text-center">
+        <div class="card p-5 shadow-sm border-0 bg-white">
+            <i class="bi bi-shield-slash-fill text-danger display-3 mb-3"></i>
+            <h3 class="fw-bold text-dark">Acceso Restringido</h3>
+            <p class="text-muted mb-4">No tienes los permisos necesarios para acceder a este recurso. Esta sección está reservada para roles autorizados.</p>
+            <div>
+                <a asp-controller="Workshops" asp-action="Index" class="btn btn-primary px-4 fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

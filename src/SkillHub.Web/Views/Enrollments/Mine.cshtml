@@ -1,0 +1,136 @@
+@model IEnumerable<EnrollmentDto>
+
+@{
+    ViewData["Title"] = "Mis Inscripciones";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="h3 fw-bold text-gray-800 mb-1">Mis Inscripciones</h2>
+        <p class="text-muted mb-0">Gestiona tus talleres inscritos, descarga constancias oficiales o cancela tus cupos.</p>
+    </div>
+    <a asp-controller="Workshops" asp-action="Index" class="btn btn-primary btn-sm px-3">
+        <i class="bi bi-plus-circle me-1"></i> Explorar Más Talleres
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card p-5 text-center bg-white shadow-sm border-0">
+        <i class="bi bi-journal-x text-muted display-4 mb-3"></i>
+        <h5 class="fw-bold">Aún no tienes inscripciones registradas</h5>
+        <p class="text-muted mb-4">Descubre nuestros talleres prácticos disponibles e inscríbete fácilmente.</p>
+        <div>
+            <a asp-controller="Workshops" asp-action="Index" class="btn btn-primary px-4 fw-semibold">
+                Ver Catálogo de Talleres
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-secondary small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Código</th>
+                        <th>Taller</th>
+                        <th>Fecha de Inscripción</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var isActive = item.Status == "Active";
+                        <tr>
+                            <td class="ps-4">
+                                <span class="badge bg-indigo-subtle text-primary border px-2 py-1 fw-bold">
+                                    @item.WorkshopCode
+                                </span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.WorkshopTitle</div>
+                                <small class="text-muted">Inscripción #@item.Id</small>
+                            </td>
+                            <td class="text-secondary small">
+                                @item.EnrolledAt.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @if (isActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-semibold">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Activa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 fw-semibold">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Cancelada
+                                    </span>
+                                    @if (item.CancelledAt.HasValue)
+                                    {
+                                        <div class="small text-muted mt-1">El @item.CancelledAt.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                    }
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    @if (isActive)
+                                    {
+                                        <a asp-controller="Enrollments" asp-action="Certificate" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-success fw-semibold d-flex align-items-center gap-1 shadow-sm"
+                                           title="Descargar Constancia Oficial en PDF">
+                                            <i class="bi bi-file-earmark-pdf-fill"></i> Constancia PDF
+                                        </a>
+
+                                        <button type="button" class="btn btn-sm btn-outline-danger fw-semibold d-flex align-items-center gap-1 shadow-sm"
+                                                data-bs-toggle="modal" data-bs-target="#cancelModal-@item.Id"
+                                                title="Cancelar mi inscripción">
+                                            <i class="bi bi-x-lg"></i> Cancelar
+                                        </button>
+
+                                        <!-- Cancel Confirmation Modal -->
+                                        <div class="modal fade" id="cancelModal-@item.Id" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content text-start">
+                                                    <div class="modal-header border-0 pb-0">
+                                                        <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2">
+                                                            <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Cancelación
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body py-3">
+                                                        <p class="mb-2">¿Estás seguro de que deseas cancelar tu inscripción en el taller <strong>@item.WorkshopTitle</strong> (@item.WorkshopCode)?</p>
+                                                        <div class="alert alert-warning small mb-0">
+                                                            <i class="bi bi-info-circle me-1"></i> <strong>Importante:</strong> Solo puedes cancelar con un mínimo de <strong>24 horas de anticipación</strong> al inicio del taller. Al cancelar, tu cupo quedará disponible para otro participante.
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-0 pt-0">
+                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Mantener Inscripción</button>
+                                                        <form asp-controller="Enrollments" asp-action="Cancel" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger fw-semibold">
+                                                                Sí, Cancelar Inscripción
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small fst-italic">Cupo liberado</span>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
