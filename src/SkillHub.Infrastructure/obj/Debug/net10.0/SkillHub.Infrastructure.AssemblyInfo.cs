@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SkillHub.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+adf219a600eadf554813a532df170b5fe598007c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6ef1636f161d5cf337c719d7b812c2c4dd9a358")]
 [assembly: System.Reflection.AssemblyProductAttribute("SkillHub.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SkillHub.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
