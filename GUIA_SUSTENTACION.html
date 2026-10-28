@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Sustentación — SkillHub .NET 10</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; padding: 30px; }
+        .guide-container { max-width: 900px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        h1 { color: #4f46e5; font-weight: 800; border-bottom: 3px solid #e0e7ff; padding-bottom: 12px; }
+        h2 { color: #1e1b4b; font-weight: 700; margin-top: 32px; border-left: 4px solid #4f46e5; padding-left: 12px; }
+        .quote-box { background: #eef2ff; border-left: 4px solid #4f46e5; padding: 16px; border-radius: 8px; font-style: italic; }
+        .table thead { background: #4f46e5; color: white; }
+        pre, code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #d946ef; font-size: 0.9em; }
+        pre code { display: block; padding: 12px; color: #0f172a; }
+        @media print {
+            body { background: white; padding: 0; }
+            .guide-container { box-shadow: none; padding: 0; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-mortarboard-fill me-2"></i> SkillHub — Guía de Sustentación</h1>
+            <button onclick="window.print()" class="btn btn-primary btn-sm no-print"><i class="bi bi-printer-fill me-1"></i> Imprimir / Guardar como PDF</button>
+        </div>
+
+        <p class="lead text-secondary">Documento de preparación para la sustentación y defensa de la Prueba de Desempeño .NET — SkillHub.</p>
+
+        <h2>1. 🎤 El Discurso Inicial (Tu presentación de 1 minuto)</h2>
+        <div class="quote-box my-3">
+            "Buenas tardes. Para esta prueba de desempeño desarrollé la plataforma <strong>SkillHub</strong>, una solución integral para gestionar talleres presenciales y sus inscripciones, resolviendo problemáticas reales como el sobrecupo, duplicados, cruces de horarios y control de cancelaciones.<br><br>
+            Implementé una arquitectura basada en <strong>Clean Architecture</strong> dividida en 4 capas desacopladas, utilizando <strong>Entity Framework Core con Code First y PostgreSQL</strong>, <strong>ASP.NET Core Identity</strong> con <strong>JWT</strong> para autorización basada en roles (<code>Empleado</code> y <code>Participante</code>), y dos capas de presentación: una <strong>REST API con Swagger</strong> y una <strong>aplicación Web MVC</strong> que consume directamente la capa de aplicación."
+        </div>
+
+        <h2>2. 🏛️ Cómo explicar la Arquitectura (Clean Architecture)</h2>
+        <ol class="list-group list-group-numbered mb-3">
+            <li class="list-group-item"><strong>SkillHub.Domain (El Núcleo):</strong> Contiene las entidades principales (<code>Workshop</code>, <code>Enrollment</code>, <code>ApplicationUser</code>), Enums y excepciones de negocio. <em>El dominio es C# puro; no depende de Entity Framework ni de bases de datos. No es un modelo anémico: las entidades contienen sus propias reglas.</em></li>
+            <li class="list-group-item"><strong>SkillHub.Application (Casos de Uso):</strong> Contiene los DTOs y los servicios (<code>WorkshopService</code>, <code>EnrollmentService</code>, <code>AuthService</code>, <code>ReportService</code>). Define las abstracciones para librerías externas (<code>IPdfReportGenerator</code> y <code>IExcelReader</code>), cumpliendo el Principio de Inversión de Dependencias (DIP).</li>
+            <li class="list-group-item"><strong>SkillHub.Infrastructure (Detalles Técnicos):</strong> Implementa la persistencia con <code>ApplicationDbContext</code> (PostgreSQL), los Repositorios, <code>UnitOfWork</code>, generación de PDF con <strong>QuestPDF</strong> y lectura de Excel con <strong>EPPlus</strong>.</li>
+            <li class="list-group-item"><strong>Capas de Presentación:</strong>
+                <ul>
+                    <li><code>SkillHub.Api</code>: Expone los endpoints REST para Swagger, Postman y empleados.</li>
+                    <li><code>SkillHub.Web</code>: Aplicación MVC para participantes (Opción A). Ambas capas consumen la misma lógica de <code>Application</code>.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>3. 🛡️ Las Reglas de Negocio en el Código</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>Regla</th>
+                        <th>Dónde está en el código</th>
+                        <th>Qué responder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Cupos Dinámicos</strong></td>
+                        <td><code>Workshop.cs</code> &rarr; <code>GetAvailableCapacity()</code></td>
+                        <td>El taller calcula sus cupos restando solo las activas (<code>Capacity - ActiveEnrollmentsCount</code>). Las canceladas liberan el cupo.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Sin Duplicados</strong></td>
+                        <td><code>EnrollmentService.cs</code> &rarr; <code>EnrollAsync()</code></td>
+                        <td>Consulto si el participante ya tiene una inscripción <code>Active</code>. Si existe, lanzo <code>BusinessRuleException</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Sin Cruces de Horario</strong></td>
+                        <td><code>Workshop.cs</code> &rarr; <code>OverlapsWith()</code></td>
+                        <td>Fórmula matemática: <code>StartDateTime &lt; other.End &amp;&amp; EndDateTime &gt; other.Start</code>. Si se cruza con otro taller activo, se rechaza.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Solo Talleres Futuros</strong></td>
+                        <td><code>Workshop.cs</code> &rarr; <code>Validate()</code></td>
+                        <td>Se valida que <code>StartDateTime &gt; DateTime.UtcNow</code> tanto al crear el taller como al inscribirse.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Cancelación (24h)</strong></td>
+                        <td><code>Enrollment.cs</code> &rarr; <code>Cancel()</code></td>
+                        <td>Participante solo puede cancelar si faltan 24h o más. Empleado puede cancelar en cualquier momento antes del inicio. Audita quién y cuándo.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6. Reinscripción</strong></td>
+                        <td><code>EnrollmentService.cs</code></td>
+                        <td>Como la inscripción previa quedó en estado <code>Cancelled</code>, ya no cuenta como activa y se puede volver a inscribir.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4. 💻 Guion para la Demostración en Vivo</h2>
+        <h4>Parte A: Aplicación Web (Participantes)</h4>
+        <pre><code>dotnet run --project src/SkillHub.Web</code></pre>
+        <p>Abre <code>http://localhost:5238</code>:</p>
+        <ol>
+            <li><strong>Catálogo Público:</strong> Muestra las tarjetas con sus insignias de cupos en verde.</li>
+            <li><strong>Login:</strong> Inicia sesión con <code>jorge.perez@correo.com</code> / <code>Skillhub2026*</code>.</li>
+            <li><strong>Inscribirte:</strong> Clic en "Inscribirme al Taller". Verás confirmación y te lleva a "Mis Inscripciones".</li>
+            <li><strong>Descargar Constancia:</strong> Clic en "Constancia PDF" y muestra el documento oficial generado con QuestPDF.</li>
+            <li><strong>Cancelar Cupo:</strong> Clic en "Cancelar" y muestra cómo el cupo se libera de inmediato en el catálogo.</li>
+        </ol>
+
+        <h4>Parte B: REST API (Swagger)</h4>
+        <pre><code>dotnet run --project src/SkillHub.Api</code></pre>
+        <p>Abre <code>http://localhost:5292/</code>:</p>
+        <ol>
+            <li><strong>Login Empleado:</strong> Ejecuta <code>POST /api/v1/auth/login</code> con <code>andres.mejia@correo.com</code> / <code>Instructor2026*</code>. Copia el token y autoriza arriba en <code>Bearer &lt;token&gt;</code>.</li>
+            <li><strong>Reporte Top Talleres:</strong> Ejecuta <code>GET /api/v1/reports/top-workshops</code> para mostrar el orden descendente por inscripciones activas.</li>
+            <li><strong>Importación Excel:</strong> Sube <code>SkillHub_Data.xlsx</code> en <code>POST /api/v1/enrollments/import</code> y muestra el reporte de procesadas y rechazadas.</li>
+        </ol>
+
+        <h4>Parte C: Pruebas Unitarias</h4>
+        <pre><code>dotnet test</code></pre>
+        <p>Muestra las <strong>11 pruebas unitarias</strong> en verde.</p>
+
+        <h2>5. ❓ Preguntas Frecuentes y Respuestas Clave</h2>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-title fw-bold text-primary">&iquest;Por qué la lógica de cancelación está en la entidad Enrollment y no en el Controller?</h6>
+                <p class="card-text mb-0"><em>"Porque en Clean Architecture aplicamos Domain-Driven Design: las reglas que gobiernan el ciclo de vida del negocio deben vivir dentro del Dominio para evitar modelos anémicos y garantizar que ninguna otra capa pueda violar la regla de las 24 horas."</em></p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-title fw-bold text-primary">&iquest;Dónde se implementó la generación de PDFs y por qué?</h6>
+                <p class="card-text mb-0"><em>"En la capa de <code>Infrastructure</code> usando QuestPDF, pero desacoplada detrás de la interfaz <code>IPdfReportGenerator</code> en <code>Application</code>, cumpliendo con el Principio de Inversión de Dependencias (DIP)."</em></p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-title fw-bold text-primary">&iquest;Cómo manejas los errores para que la API no se caiga?</h6>
+                <p class="card-text mb-0"><em>"Implementé un middleware personalizado <code>GlobalExceptionHandlingMiddleware</code> que intercepta las excepciones del dominio: captura <code>NotFoundException</code> (404), <code>BusinessRuleException</code> (400 Bad Request) y formatea un JSON estándar con mensaje claro."</em></p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6 class="card-title fw-bold text-primary">&iquest;Cómo se cargaron los datos iniciales?</h6>
+                <p class="card-text mb-0"><em>"Creé un servicio <code>DataSeeder</code> que se ejecuta automáticamente en el arranque de la aplicación (<code>Program.cs</code>), verificando que los roles, instructores y talleres existan en PostgreSQL desde el primer arranque."</em></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
