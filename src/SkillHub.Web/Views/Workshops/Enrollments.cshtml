@@ -1,0 +1,102 @@
+@model IEnumerable<EnrollmentDto>
+
+@{
+    var workshop = ViewBag.Workshop as WorkshopDetailDto;
+    ViewData["Title"] = $"Inscritos en {workshop?.Title}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <a asp-controller="Workshops" asp-action="Index" class="btn btn-outline-secondary btn-sm mb-2">
+            <i class="bi bi-arrow-left me-1"></i> Volver a Talleres
+        </a>
+        <h2 class="h3 fw-bold text-dark mb-1">
+            Participantes Inscritos: <span class="text-primary">@workshop?.Title</span> (@workshop?.Code)
+        </h2>
+        <p class="text-muted mb-0">
+            Instructor: <strong>@workshop?.InstructorName</strong> | Cupo: <strong>@workshop?.Capacity</strong> | Cupos Disponibles: <strong>@workshop?.AvailableCapacity</strong>
+        </p>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card p-5 text-center bg-white shadow-sm border-0">
+        <i class="bi bi-people text-muted display-4 mb-3"></i>
+        <h5 class="fw-bold">No hay participantes inscritos en este taller todavía</h5>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-secondary small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Participante</th>
+                        <th>Correo</th>
+                        <th>Fecha de Inscripción</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acción Empleado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var isActive = item.Status == "Active";
+                        <tr>
+                            <td class="ps-4 fw-bold text-dark">
+                                @item.ParticipantName
+                            </td>
+                            <td class="text-secondary">
+                                @item.ParticipantEmail
+                            </td>
+                            <td class="small text-muted">
+                                @item.EnrolledAt.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @if (isActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-semibold">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Activa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 fw-semibold">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Cancelada
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    @if (isActive)
+                                    {
+                                        <a asp-controller="Enrollments" asp-action="Certificate" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-success fw-semibold" title="Descargar Constancia">
+                                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                                        </a>
+
+                                        <form asp-controller="Enrollments" asp-action="Cancel" asp-route-id="@item.Id"
+                                              asp-route-returnUrl="@Url.Action("Enrollments", "Workshops", new { id = workshop?.Id })"
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('¿Confirmas cancelar la inscripción de este participante? Como empleado puedes hacerlo sin la restricción de 24 horas.');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold">
+                                                <i class="bi bi-x-lg"></i> Cancelar Cupo
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small fst-italic">Cancelada</span>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

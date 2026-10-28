@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SkillHub.Application.DTOs.Workshops;
 using SkillHub.Application.Interfaces;
 using SkillHub.Domain.Constants;
 using SkillHub.Domain.Exceptions;
@@ -65,6 +66,62 @@ public class WorkshopsController : Controller
         catch (Exception ex)
         {
             TempData["Error"] = $"Ocurrió un error al procesar tu inscripción: {ex.Message}";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    // Admin/Employee: Create Workshop
+    [HttpGet]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(CreateWorkshopDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Code) || string.IsNullOrWhiteSpace(request.Title) || string.IsNullOrWhiteSpace(request.InstructorEmail))
+        {
+            ModelState.AddModelError(string.Empty, "Todos los campos son obligatorios.");
+            return View(request);
+        }
+
+        try
+        {
+            await _workshopService.CreateWorkshopAsync(request);
+            TempData["Success"] = $"¡Taller '{request.Title}' ({request.Code}) creado exitosamente!";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (BusinessRuleException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(request);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Error al crear el taller: {ex.Message}");
+            return View(request);
+        }
+    }
+
+    // Admin/Employee: View workshop enrollments
+    [HttpGet]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
+    public async Task<IActionResult> Enrollments(int id)
+    {
+        try
+        {
+            var workshop = await _workshopService.GetWorkshopByIdAsync(id);
+            var enrollments = await _workshopService.GetWorkshopEnrollmentsAsync(id);
+            ViewBag.Workshop = workshop;
+            return View(enrollments);
+        }
+        catch (NotFoundException)
+        {
+            TempData["Error"] = "El taller solicitado no fue encontrado.";
             return RedirectToAction(nameof(Index));
         }
     }

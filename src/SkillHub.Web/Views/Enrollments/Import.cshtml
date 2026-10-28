@@ -1,0 +1,91 @@
+@using SkillHub.Application.DTOs.Enrollments
+
+@{
+    ViewData["Title"] = "Importación Masiva desde Excel";
+    var result = ViewBag.Result as ExcelImportResultDto;
+}
+
+<div class="row justify-content-center py-3">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 p-4 bg-white mb-4">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-file-earmark-excel-fill text-success fs-3"></i>
+                <h3 class="fw-bold mb-0 text-dark">Inscripción Masiva desde Excel</h3>
+            </div>
+            <p class="text-muted small mb-3">
+                Carga un archivo Excel con las columnas <code>ParticipantEmail</code> y <code>WorkshopCode</code>. Cada fila se procesa aplicando todas las reglas de negocio (cupos, no duplicados y sin cruces de horarios).
+            </p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger py-2 small shadow-sm mb-3">
+                    <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                </div>
+            }
+
+            <form asp-controller="Enrollments" asp-action="Import" method="post" enctype="multipart/form-data" class="d-flex flex-column flex-sm-row gap-2">
+                @Html.AntiForgeryToken()
+                <input type="file" name="file" class="form-control" accept=".xlsx" required />
+                <button type="submit" class="btn btn-success fw-semibold px-4 text-nowrap">
+                    <i class="bi bi-cloud-arrow-up-fill me-1"></i> Procesar Archivo
+                </button>
+            </form>
+        </div>
+
+        @if (result != null)
+        {
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card border-0 bg-primary-subtle text-primary p-3 text-center">
+                        <span class="fs-4 fw-bold">@result.TotalProcessed</span>
+                        <small class="fw-semibold">Total Procesadas</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-success-subtle text-success p-3 text-center">
+                        <span class="fs-4 fw-bold">@result.EnrolledCount</span>
+                        <small class="fw-semibold">Inscripciones Exitosas</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-danger-subtle text-danger p-3 text-center">
+                        <span class="fs-4 fw-bold">@result.RejectedCount</span>
+                        <small class="fw-semibold">Filas Rechazadas</small>
+                    </div>
+                </div>
+            </div>
+
+            @if (result.Errors.Any())
+            {
+                <div class="card shadow-sm border-0 overflow-hidden">
+                    <div class="card-header bg-danger text-white fw-bold py-2">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Detalle de Filas Rechazadas
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Fila</th>
+                                    <th>Participante</th>
+                                    <th>Código Taller</th>
+                                    <th>Motivo del Rechazo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var err in result.Errors)
+                                {
+                                    <tr>
+                                        <td class="ps-3 fw-bold">#@err.RowNumber</td>
+                                        <td>@err.ParticipantEmail</td>
+                                        <td><span class="badge bg-light text-dark border">@err.WorkshopCode</span></td>
+                                        <td class="text-danger fw-semibold">@err.Reason</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -59,7 +59,15 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IDataSeeder, DataSeeder>();
 
-        // JWT Authentication
+        services.AddAuthorization();
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
         var secret = configuration["Jwt:Secret"] ?? "SkillHubSuperSecretKeyForJwtTokenSigning2026!";
         var issuer = configuration["Jwt:Issuer"] ?? "SkillHubApi";
         var audience = configuration["Jwt:Audience"] ?? "SkillHubClients";
@@ -85,8 +93,6 @@ public static class DependencyInjection
                 ClockSkew = TimeSpan.Zero
             };
         });
-
-        services.AddAuthorization();
 
         return services;
     }
