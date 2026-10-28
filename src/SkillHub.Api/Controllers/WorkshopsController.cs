@@ -38,7 +38,7 @@ public class WorkshopsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = UserRoles.Employee)]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
     [ProducesResponseType(typeof(WorkshopDetailDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -50,7 +50,7 @@ public class WorkshopsController : ControllerBase
     }
 
     [HttpGet("{id:int}/enrollments")]
-    [Authorize(Roles = UserRoles.Employee)]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
     [ProducesResponseType(typeof(IEnumerable<EnrollmentDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -1,9 +1,20 @@
+using Microsoft.AspNetCore.Identity;
+using SkillHub.Application.Interfaces;
 using SkillHub.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add Infrastructure & Application Services
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// Ensure Identity Cookie Authentication is Default for Web App
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+});
 
 // Configure Cookie Authentication for Web Application
 builder.Services.ConfigureApplicationCookie(options =>
@@ -20,6 +31,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+// Seed database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
+    await seeder.SeedAsync();
+}
 
 if (!app.Environment.IsDevelopment())
 {

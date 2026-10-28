@@ -18,7 +18,15 @@
         <h2 class="h4 fw-bold mb-0 text-gray-800">Próximos Talleres Disponibles</h2>
         <small class="text-muted">Mostrando solo talleres futuros con cupos calculados en tiempo real</small>
     </div>
-    <span class="badge bg-primary px-3 py-2 fs-6">@Model.Count() talleres activos</span>
+    <div class="d-flex align-items-center gap-2">
+        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador)))
+        {
+            <a asp-controller="Workshops" asp-action="Create" class="btn btn-success btn-sm px-3 fw-semibold shadow-sm">
+                <i class="bi bi-plus-circle-fill me-1"></i> + Publicar Nuevo Taller
+            </a>
+        }
+        <span class="badge bg-primary px-3 py-2 fs-6">@Model.Count() talleres activos</span>
+    </div>
 </div>
 
 @if (!Model.Any())
@@ -71,10 +79,23 @@ else
                                 <i class="bi bi-clock text-secondary"></i>
                                 <span><strong>Horario:</strong> @ws.StartDateTime.ToString("HH:mm") - @ws.EndDateTime.ToString("HH:mm")</span>
                             </div>
+                            <div class="d-flex align-items-center gap-2 text-secondary mt-1">
+                                <i class="bi bi-people text-secondary"></i>
+                                <span><strong>Inscritos activos:</strong> @ws.ActiveEnrollmentsCount / @ws.Capacity</span>
+                            </div>
                         </div>
 
                         <div class="mt-auto">
-                            @if (User.Identity?.IsAuthenticated == true && User.IsInRole(UserRoles.Participant))
+                            @if (User.Identity?.IsAuthenticated == true && (User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador)))
+                            {
+                                <div class="d-grid gap-2">
+                                    <a asp-controller="Workshops" asp-action="Enrollments" asp-route-id="@ws.Id"
+                                       class="btn btn-outline-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                                        <i class="bi bi-people-fill"></i> Ver Participantes (@ws.ActiveEnrollmentsCount)
+                                    </a>
+                                </div>
+                            }
+                            else if (User.Identity?.IsAuthenticated == true && User.IsInRole(UserRoles.Participant))
                             {
                                 @if (ws.AvailableCapacity > 0)
                                 {
@@ -92,12 +113,6 @@ else
                                         <i class="bi bi-dash-circle"></i> Sin cupos disponibles
                                     </button>
                                 }
-                            }
-                            else if (User.Identity?.IsAuthenticated == true && !User.IsInRole(UserRoles.Participant))
-                            {
-                                <div class="text-center text-muted small py-1">
-                                    <i class="bi bi-shield-lock me-1"></i> Sesión iniciada como Empleado
-                                </div>
                             }
                             else
                             {

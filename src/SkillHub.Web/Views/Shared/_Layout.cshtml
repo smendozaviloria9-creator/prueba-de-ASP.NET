@@ -70,25 +70,50 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link fw-semibold" asp-controller="Workshops" asp-action="Index">
-                                <i class="bi bi-grid-fill me-1 text-secondary"></i> Catálogo de Talleres
+                                <i class="bi bi-grid-fill me-1 text-secondary"></i> Catálogo
                             </a>
                         </li>
-                        @if (User.Identity?.IsAuthenticated == true && User.IsInRole(UserRoles.Participant))
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold" asp-controller="Enrollments" asp-action="Mine">
-                                    <i class="bi bi-journal-check me-1 text-success"></i> Mis Inscripciones
-                                </a>
-                            </li>
+                            var isEmployee = User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador);
+                            var isParticipant = User.IsInRole(UserRoles.Participant);
+
+                            @if (isParticipant)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link fw-semibold" asp-controller="Enrollments" asp-action="Mine">
+                                        <i class="bi bi-journal-check me-1 text-success"></i> Mis Inscripciones
+                                    </a>
+                                </li>
+                            }
+                            @if (isEmployee)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link fw-semibold text-primary" asp-controller="Workshops" asp-action="Create">
+                                        <i class="bi bi-plus-circle-fill me-1"></i> Publicar Taller
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link fw-semibold" asp-controller="Reports" asp-action="TopWorkshops">
+                                        <i class="bi bi-bar-chart-line-fill me-1 text-info"></i> Reporte Top
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link fw-semibold" asp-controller="Enrollments" asp-action="Import">
+                                        <i class="bi bi-file-earmark-excel-fill me-1 text-success"></i> Cargar Excel
+                                    </a>
+                                </li>
+                            }
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto align-items-center gap-2">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
+                            var isEmployee = User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador);
                             <li class="nav-item">
-                                <span class="badge bg-light text-dark border px-3 py-2 fw-medium d-flex align-items-center gap-1">
-                                    <i class="bi bi-person-circle text-primary"></i>
-                                    @User.Identity.Name
+                                <span class="badge @(isEmployee ? "bg-warning-subtle text-dark border-warning" : "bg-light text-dark") border px-3 py-2 fw-medium d-flex align-items-center gap-1">
+                                    <i class="bi @(isEmployee ? "bi-shield-check text-warning" : "bi-person-circle text-primary")"></i>
+                                    @User.Identity.Name @(isEmployee ? "(Administrador)" : "(Participante)")
                                 </span>
                             </li>
                             <li class="nav-item">

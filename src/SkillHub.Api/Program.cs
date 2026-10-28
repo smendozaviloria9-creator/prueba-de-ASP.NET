@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add infrastructure and application services
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Add controllers
 builder.Services.AddControllers();

@@ -61,14 +61,14 @@ public class EnrollmentsController : ControllerBase
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var isEmployee = User.IsInRole(UserRoles.Employee);
+        var isEmployee = User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador);
         var enrollment = await _enrollmentService.CancelEnrollmentAsync(id, userId, isEmployee, cancellationToken);
 
         return Ok(enrollment);
     }
 
     [HttpPost("import")]
-    [Authorize(Roles = UserRoles.Employee)]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
     [ProducesResponseType(typeof(ExcelImportResultDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -99,7 +99,7 @@ public class EnrollmentsController : ControllerBase
         if (string.IsNullOrEmpty(userId))
             return Unauthorized();
 
-        var isEmployee = User.IsInRole(UserRoles.Employee);
+        var isEmployee = User.IsInRole(UserRoles.Employee) || User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.Administrador);
         var pdfBytes = await _enrollmentService.GenerateCertificatePdfAsync(id, userId, isEmployee, cancellationToken);
 
         return File(pdfBytes, "application/pdf", $"Constancia_Inscripcion_{id}.pdf");

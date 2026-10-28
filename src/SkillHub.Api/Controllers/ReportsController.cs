@@ -18,7 +18,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet("top-workshops")]
-    [Authorize(Roles = UserRoles.Employee)]
+    [Authorize(Roles = $"{UserRoles.Employee},{UserRoles.Admin},Administrador")]
     [ProducesResponseType(typeof(IEnumerable<TopWorkshopReportDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

@@ -1,0 +1,75 @@
+@model SkillHub.Application.DTOs.Workshops.CreateWorkshopDto
+
+@{
+    ViewData["Title"] = "Publicar Nuevo Taller";
+}
+
+<div class="row justify-content-center py-3">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow-sm border-0 p-4 bg-white">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="bi bi-calendar-plus-fill text-primary fs-3"></i>
+                <h3 class="fw-bold mb-0 text-dark">Publicar Nuevo Taller</h3>
+            </div>
+            <p class="text-muted small mb-4">Solo los empleados autorizados pueden registrar nuevos talleres en la plataforma.</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger py-2 small shadow-sm">
+                    <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                </div>
+            }
+
+            <form asp-controller="Workshops" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold text-secondary small">Código Único</label>
+                        <input type="text" class="form-control" name="Code" value="@Model?.Code" placeholder="Ej. FOT-004" required />
+                    </div>
+                    <div class="col-md-7">
+                        <label class="form-label fw-semibold text-secondary small">Título del Taller</label>
+                        <input type="text" class="form-control" name="Title" value="@Model?.Title" placeholder="Ej. Fotografía Nocturna" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small">Descripción</label>
+                    <textarea class="form-control" name="Description" rows="3" placeholder="Detalla los contenidos del taller..." required>@Model?.Description</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small">Correo del Instructor (Empleado Registrado)</label>
+                    <input type="email" class="form-control" name="InstructorEmail" value="@Model?.InstructorEmail" placeholder="andres.mejia@correo.com" required />
+                    <small class="text-muted">El instructor debe existir en el sistema y tener rol de Empleado.</small>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-secondary small">Fecha y Hora de Inicio</label>
+                        <input type="datetime-local" class="form-control" name="StartDateTime" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-secondary small">Fecha y Hora de Fin</label>
+                        <input type="datetime-local" class="form-control" name="EndDateTime" required />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold text-secondary small">Cupo Máximo</label>
+                    <input type="number" class="form-control" name="Capacity" value="@(Model?.Capacity > 0 ? Model.Capacity : 15)" min="1" required />
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a asp-controller="Workshops" asp-action="Index" class="btn btn-light">
+                        <i class="bi bi-arrow-left me-1"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                        <i class="bi bi-check-circle-fill me-1"></i> Publicar Taller
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

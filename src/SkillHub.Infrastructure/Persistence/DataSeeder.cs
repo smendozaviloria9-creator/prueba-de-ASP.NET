@@ -25,7 +25,7 @@ public class DataSeeder : IDataSeeder
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
         // 1. Seed Roles
-        string[] roles = [UserRoles.Employee, UserRoles.Participant];
+        string[] roles = [UserRoles.Employee, UserRoles.Participant, UserRoles.Admin, UserRoles.Administrador];
         foreach (var role in roles)
         {
             if (!await _roleManager.RoleExistsAsync(role))
@@ -34,7 +34,7 @@ public class DataSeeder : IDataSeeder
             }
         }
 
-        // 2. Seed Instructors (Employees)
+        // 2. Seed Instructors (Employees / Admins)
         var instructorsData = new List<(string Name, string Email, string Password, string Specialty)>
         {
             ("Andrés Felipe Mejía Arango", "andres.mejia@correo.com", "Instructor2026*", "Fotografía"),
@@ -61,10 +61,18 @@ public class DataSeeder : IDataSeeder
                     CreatedAt = DateTime.UtcNow
                 };
 
-                var createRes = await _userManager.CreateAsync(user, inst.Password);
-                if (createRes.Succeeded)
+                await _userManager.CreateAsync(user, inst.Password);
+            }
+
+            if (user != null)
+            {
+                string[] adminRoles = [UserRoles.Employee, UserRoles.Admin, UserRoles.Administrador];
+                foreach (var r in adminRoles)
                 {
-                    await _userManager.AddToRoleAsync(user, UserRoles.Employee);
+                    if (!await _userManager.IsInRoleAsync(user, r))
+                    {
+                        await _userManager.AddToRoleAsync(user, r);
+                    }
                 }
             }
         }
@@ -119,8 +127,12 @@ public class DataSeeder : IDataSeeder
                     CreatedAt = DateTime.UtcNow
                 };
 
-                var createRes = await _userManager.CreateAsync(user, part.Password);
-                if (createRes.Succeeded)
+                await _userManager.CreateAsync(user, part.Password);
+            }
+
+            if (user != null)
+            {
+                if (!await _userManager.IsInRoleAsync(user, UserRoles.Participant))
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.Participant);
                 }
