@@ -193,7 +193,8 @@ The final database export containing all schema definitions, constraints, indexe
 ## 👤 Author
 
 - **Full Name:** Sebastián Mendoza Viloria
-- **Clan:** Riwi
+- **Clan :Esthercita
 - **Email:** smendozaviloria9@gmail.com
 - **Identity Document:** 1043448063
 - **GitHub Repository:** [https://github.com/smendozaviloria9-creator/prueba-de-ASP.NET.git](https://github.com/smendozaviloria9-creator/prueba-de-ASP.NET.git)
+- **GitHub Repository:** smendozaviloria9-creator
